@@ -1,0 +1,103 @@
+version: "3.3"
+services:
+  bnovo-nginx:
+    image: nginx:alpine
+    restart: ${DOCKER_RESTART}
+    container_name: bnovo-nginx
+    ports:
+      - ${NGINX_HOST}:${NGINX_HTTP}:80
+      - ${NGINX_HOST}:${NGINX_HTTPS}:443
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ../storage/nginx/:/var/log/nginx/
+      - ../dev:/data/www/http
+      - ../doc/api/html:/data/www/doc
+    depends_on:
+      - bnovo-php
+    healthcheck:
+      test: curl --fail http://localhost || exit 1
+      start_period: 10s
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      - bnovo_net
+
+  bnovo-php:
+    build:
+      context: php82
+      args:
+        - ENV=${ENV}
+    restart: ${DOCKER_RESTART}
+    container_name: bnovo-php
+    hostname: bnovo-php
+    environment:
+      - PHP_IDE_CONFIG=serverName=xdebugServer
+    volumes:
+      - "${PHP_LARAVEL_ROOT_PATH}:/data/www/http"
+      - "${PHP_LARAVEL_LOGS_PATH}:/data/www/http/storage/logs"
+      - "${PHP_XDEBUG_LOG_PATH}:/data/www/log"
+      - "${PHP_FPM_INI}:/etc/php/8.2/fpm/php.ini"
+      - "${PHP_CLI_INI}:/etc/php/8.2/cli/php.ini"
+    depends_on:
+      bnovo-postgres:
+        condition: service_healthy
+      bnovo-redis:
+        condition: service_healthy
+    networks:
+      - bnovo_net
+
+
+  bnovo-postgres:
+    build:
+      context: postgres
+      args:
+        - POSTGRES_FROM_IMAGE=${POSTGRES_FROM_IMAGE}
+    restart: ${DOCKER_RESTART}
+    container_name: bnovo-postgres
+    hostname: bnovo-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - PGUSER=${POSTGRES_USER:-admin}
+      - PGDATABASE=${POSTGRES_DB:-postgres}
+      - PGDATA=/storage/db/data
+    volumes:
+      - "${POSTGRES_DATA_PATH}:/storage/db/data"
+      - "${POSTGRES_LOG_PATH}:/storage/db/log"
+      - "${POSTGRES_BACKUP_PATH}:/storage/backup"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      start_period: 10s
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    ports:
+      - "${POSTGRES_HOST}:${POSTGRES_PORT}:5432"
+    networks:
+      - bnovo_net
+
+  bnovo-redis:
+    restart: ${DOCKER_RESTART}
+    build:
+      context: redis
+    container_name: bnovo-redis
+    hostname: bnovo-redis
+    ports:
+      - "${REDIS_HOST}:${REDIS_PORT}:6379"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - "${REDIS_DATA_PATH}:/data"
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      start_period: 10s
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    networks:
+      - bnovo_net
+
+networks:
+  bnovo_net:

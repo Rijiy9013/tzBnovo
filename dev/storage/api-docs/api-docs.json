@@ -1,0 +1,444 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Guest API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/{resource}": {
+            "get": {
+                "summary": "Get list of resources",
+                "operationId": "c2f4020079b58661727b61926921cce8",
+                "parameters": [
+                    {
+                        "name": "resource",
+                        "in": "path",
+                        "description": "Resource name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new resource",
+                "operationId": "265e9c3f7ff91d4aae7d06f9bd11eae1",
+                "parameters": [
+                    {
+                        "name": "resource",
+                        "in": "path",
+                        "description": "Resource name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Resource created"
+                    }
+                }
+            }
+        },
+        "/api/v1/{resource}/paginate": {
+            "get": {
+                "summary": "Get paginated list of resources",
+                "operationId": "97889f828c7fa724e74ad78bbe232551",
+                "parameters": [
+                    {
+                        "name": "resource",
+                        "in": "path",
+                        "description": "Resource name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Number of resources per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/v1/{resource}/{uuid}": {
+            "get": {
+                "summary": "Get resource by UUID",
+                "operationId": "a52cbfc8fafcf5d91056ea04d6d0f933",
+                "parameters": [
+                    {
+                        "name": "resource",
+                        "in": "path",
+                        "description": "Resource name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID of resource",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update existing resource",
+                "operationId": "9640c8113d56522857eaee8ad296f8d7",
+                "parameters": [
+                    {
+                        "name": "resource",
+                        "in": "path",
+                        "description": "Resource name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID of resource",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resource updated"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a resource",
+                "operationId": "3c6f2638ae2627be7663fa2c2d9e9279",
+                "parameters": [
+                    {
+                        "name": "resource",
+                        "in": "path",
+                        "description": "Resource name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID of resource",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    }
+                }
+            }
+        },
+        "/api/v1/guests": {
+            "get": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Get list of guests",
+                "operationId": "e6969d74a822f954d1e247bf9eddeb41",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GuestResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Create a new guest",
+                "operationId": "7163f20418ab525ef994cf21bc0d3649",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Guest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Guest created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuestResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/guests/paginate": {
+            "get": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Get paginated list of guests",
+                "operationId": "88d817a19d6ceba1220dc011dc435948",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Number of guests per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GuestResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/guests/{uuid}": {
+            "get": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Get guest by UUID",
+                "operationId": "a7f61d1845e7e44f9920781cca62831f",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID of guest to return",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuestResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Update existing guest",
+                "operationId": "1e477dfe5c8e6cb05280b35aec3a249d",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID of guest to update",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Guest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Guest updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuestResource"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Guests"
+                ],
+                "summary": "Delete a guest",
+                "operationId": "ef17f683e9e1f0ba2427bf03b5026fd1",
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "UUID of guest to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "GuestResource": {
+                "title": "GuestResource",
+                "required": [
+                    "uuid",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone"
+                ],
+                "properties": {
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "example": "Ivan"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Ivanov"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "ivan.ivanov@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+7234567890"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "Russia"
+                    }
+                },
+                "type": "object"
+            },
+            "Guest": {
+                "title": "Guest",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "example": "Ivan"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Ivanov"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "ivan.ivanov@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+7234567890"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "Russia"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Guests",
+            "description": "Guests"
+        }
+    ]
+}
