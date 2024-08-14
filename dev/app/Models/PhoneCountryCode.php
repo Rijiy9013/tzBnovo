@@ -16,7 +16,7 @@ class PhoneCountryCode extends Model
     protected $fillable = ['country', 'code'];
 
     protected $casts = [
-        'uuid' => 'string',
+        'id' => 'string',
     ];
 
     protected static function boot()

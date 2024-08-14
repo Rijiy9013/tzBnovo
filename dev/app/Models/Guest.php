@@ -37,7 +37,7 @@ class Guest extends Model
     ];
 
     protected $casts = [
-        'uuid' => 'string'
+        'id' => 'string'
     ];
 
     public static function boot()
